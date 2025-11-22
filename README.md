@@ -105,4 +105,4 @@ Copiar código
 
 ## 📬 Contacto del equipo
 Proyecto académico – Universidad Tecnológica.  
-Cualquier duda técnica → contactar al líder del equipo.
+Cualquier duda técnica → contactar al líder del equipo por favor.
