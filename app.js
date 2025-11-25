@@ -1,7 +1,7 @@
 // app.js
 "use strict";
 
-require("dotenv").config();  // Cargar variables de entorno
+require("dotenv").config({ silent: true });  // Cargar variables de entorno
 
 const express = require("express");
 const cors = require("cors");
@@ -9,6 +9,7 @@ const db = require("./db");  // Conexión MySQL (pool)
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 // ======================
 // Middlewares globales
