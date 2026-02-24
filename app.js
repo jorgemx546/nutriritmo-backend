@@ -72,9 +72,10 @@ app.get("/api/ayunos/:idUsuario", (req, res) => {
 app.post("/api/ayunos/iniciar", (req, res) => {
     const { id_usuario, inicio_timestamp } = req.body;
 
-    if (!id_usuario || !inicio_timestamp) {// Validar datos
+    // Validación de los datos
+    if (!id_usuario || isNaN(id_usuario) || !inicio_timestamp) {
         return res.status(400).json({
-            error: "Faltan datos: se requiere id_usuario e inicio_timestamp",
+            error: "Faltan datos: se requiere id_usuario e inicio_timestamp, y id_usuario debe ser numérico",
         });
     }
     // Consulta SQL para insertar un nuevo ayuno
@@ -82,14 +83,15 @@ app.post("/api/ayunos/iniciar", (req, res) => {
     INSERT INTO ayunos (id_usuario, inicio_timestamp, estado)
     VALUES (?, ?, 'activo')
   `;
-     // Ejecutar la consulta
+  
+    // Ejecutar la consulta
     db.query(sql, [id_usuario, inicio_timestamp], (err, result) => {
         if (err) {
-            return handleDbError(res, err, "Error al iniciar el ayuno");
+            return handleDbError(res, err, "Error al iniciar el ayuno");// Manejo de error al iniciar el ayuno
         }
 
         res.status(201).json({
-            message: "Ayuno iniciado correctamente",
+            message: "Ayuno iniciado correctamente",// Respuesta exitosa
             id_ayuno: result.insertId,
         });
     });
@@ -107,18 +109,18 @@ app.post("/api/ayunos/detener", (req, res) => {
         });
     }
 
-    const sql = `
-    UPDATE ayunos
-    SET fin_timestamp = ?, duracion_horas = ?, estado = 'completado'
-    WHERE id_ayuno = ? AND estado = 'activo'
-  `;
-
+  const sql = `
+  UPDATE ayunos
+  SET fin_timestamp = ?, duracion_horas = ?, estado = 'completado'
+  WHERE id_ayuno = ? AND estado = 'activo'
+`;
+    // Ejecutar la consulta
     db.query(sql, [fin_timestamp, duracion_horas, id_ayuno], (err, result) => {
-        if (err) {
+        if (err) {// Manejo de error al detener el ayuno
             return handleDbError(res, err, "Error al detener el ayuno");
         }
 
-        if (result.affectedRows === 0) {
+        if (result.affectedRows === 0) { // Verificar si se actualizó algún registro
             return res.status(404).json({
                 error: "No se encontró un ayuno activo con ese id_ayuno",
             });
@@ -142,7 +144,7 @@ app.use((req, res) => {// Manejo de rutas no encontradas
 // Inicialización del servidor
 // ===================================================
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor NutriRitmo escuchando en http://localhost:${PORT}`);
+    console.log(`Servidor NutriRitmo escuchando en http://localhost:${PORT}`); // Mensaje de inicio del servidor
 });
 
 module.exports = app;// Exportar app para pruebas u otros usos
